@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Receipt - Falco Thrift</title>
+
+<style>
+body{
+  font-family:Poppins;
+  background:#eee;
+  margin:0;
+}
+
+.receipt{
+  max-width:600px;
+  margin:40px auto;
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+h2{
+  text-align:center;
+  margin-bottom:10px;
+}
+
+.info{
+  font-size:14px;
+  margin-bottom:20px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+td,th{
+  padding:8px;
+  border-bottom:1px solid #eee;
+  font-size:14px;
+}
+
+.total{
+  text-align:right;
+  font-weight:bold;
+  margin-top:10px;
+}
+
+button{
+  width:100%;
+  margin-top:20px;
+  padding:12px;
+  border:none;
+  background:#111;
+  color:#fff;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+@media print{
+  button{display:none;}
+  body{background:#fff;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="receipt">
+  <h2>FALCO THRIFT RECEIPT</h2>
+
+  <div class="info" id="info"></div>
+
+  <table id="table"></table>
+
+  <div class="total" id="total"></div>
+
+  <button onclick="window.print()">Print Receipt</button>
+</div>
+
+<script>
+
+let order = JSON.parse(localStorage.getItem("order"));
+
+if(!order){
+  document.body.innerHTML = "<h2 style='text-align:center'>No Order Found</h2>";
+}
+
+let total = 0;
+
+document.getElementById("info").innerHTML = `
+  <b>Order ID:</b> ${order.id}<br>
+  <b>Nama:</b> ${order.nama}<br>
+  <b>Alamat:</b> ${order.alamat}, ${order.kota}<br>
+  <b>WA:</b> ${order.telp}<br>
+  <b>Tanggal:</b> ${order.date}
+`;
+
+let html = `<tr><th>Item</th><th>Qty</th><th>Total</th></tr>`;
+
+order.cart.forEach(i=>{
+  total += i.price * i.qty;
+
+  html += `
+    <tr>
+      <td>${i.name}</td>
+      <td>${i.qty}</td>
+      <td>Rp ${(i.price*i.qty).toLocaleString()}</td>
+    </tr>
+  `;
+});
+
+document.getElementById("table").innerHTML = html;
+document.getElementById("total").innerText =
+  "TOTAL: Rp " + total.toLocaleString();
+
+</script>
+
+</body>
+</html>

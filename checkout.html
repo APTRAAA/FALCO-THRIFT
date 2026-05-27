@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout - Falco Thrift</title>
+
+<style>
+body{
+  font-family:Poppins;
+  margin:0;
+  background:#f5f6fb;
+}
+
+.container{
+  max-width:900px;
+  margin:40px auto;
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+h2{margin:0 0 20px}
+
+.row{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.box{
+  flex:1;
+  min-width:280px;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border:1px solid #ddd;
+  border-radius:8px;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  background:#111;
+  color:#fff;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+td,th{
+  padding:8px;
+  border-bottom:1px solid #eee;
+  font-size:14px;
+}
+
+.total{
+  font-weight:bold;
+  font-size:16px;
+  text-align:right;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Checkout Invoice</h2>
+
+  <div class="row">
+
+    <!-- FORM -->
+    <div class="box">
+      <h3>Data Pembeli</h3>
+
+      <input id="nama" placeholder="Nama">
+      <input id="alamat" placeholder="Alamat">
+      <input id="kota" placeholder="Kota">
+      <input id="telp" placeholder="No WhatsApp">
+
+      <button onclick="buatInvoice()">Buat Invoice</button>
+    </div>
+
+    <!-- CART -->
+    <div class="box">
+      <h3>Ringkasan Belanja</h3>
+      <table id="cartTable"></table>
+      <div class="total" id="total"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function loadCart(){
+  let table = document.getElementById("cartTable");
+  let total = 0;
+
+  let html = `<tr><th>Item</th><th>Qty</th><th>Harga</th></tr>`;
+
+  cart.forEach(i=>{
+    total += i.price * i.qty;
+
+    html += `
+      <tr>
+        <td>${i.name}</td>
+        <td>${i.qty}</td>
+        <td>Rp ${(i.price*i.qty).toLocaleString()}</td>
+      </tr>
+    `;
+  });
+
+  table.innerHTML = html;
+  document.getElementById("total").innerText =
+    "Total: Rp " + total.toLocaleString();
+}
+
+function buatInvoice(){
+
+  if(cart.length === 0){
+    alert("Cart kosong!");
+    return;
+  }
+
+  let orderID = "FLCO-" + Date.now();
+
+  let order = {
+    id: orderID,
+    nama: nama.value,
+    alamat: alamat.value,
+    kota: kota.value,
+    telp: telp.value,
+    cart: cart,
+    date: new Date().toLocaleString()
+  };
+
+  localStorage.setItem("order", JSON.stringify(order));
+
+  // clear cart
+  localStorage.removeItem("cart");
+
+  window.location = "receipt.html";
+}
+
+loadCart();
+
+</script>
+
+</body>
+</html>

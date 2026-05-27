@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FALCO THRIFTSHOP</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lobster&display=swap" rel="stylesheet">
+
+<style>
+
+/* =========================
+   ROOT THEME
+========================= */
+:root{
+  --bg:#f4f6fb;
+  --card:#ffffff;
+  --text:#1a1a1a;
+  --muted:#6b6b6b;
+  --primary:#111;
+  --shadow:0 10px 30px rgba(0,0,0,0.08);
+  --radius:16px;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+/* =========================
+   BASE
+========================= */
+body{
+  margin:0;
+  font-family:Poppins, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* =========================
+   HEADER (GLASS MODERN)
+========================= */
+header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 40px;
+
+  background:rgba(255,255,255,0.8);
+  backdrop-filter: blur(10px);
+  border-bottom:1px solid rgba(0,0,0,0.05);
+}
+
+.logo h1{
+  font-family:Lobster;
+  font-size:34px;
+  margin:0;
+  color:#111;
+}
+
+.nav a{
+  margin:0 12px;
+  text-decoration:none;
+  color:var(--muted);
+  font-weight:500;
+  font-size:14px;
+  transition:0.2s;
+}
+
+.nav a:hover{
+  color:var(--primary);
+}
+
+/* =========================
+   CART
+========================= */
+.cart{
+  background:var(--primary);
+  color:#fff;
+  padding:8px 16px;
+  border-radius:30px;
+  cursor:pointer;
+  font-size:14px;
+  box-shadow:var(--shadow);
+  transition:0.25s;
+}
+
+.cart:hover{
+  transform:scale(1.05);
+}
+
+/* bounce */
+@keyframes cartBounce{
+  0%{transform:scale(1);}
+  30%{transform:scale(1.25);}
+  60%{transform:scale(0.95);}
+  100%{transform:scale(1);}
+}
+
+.cart.bounce{
+  animation:cartBounce 0.4s ease;
+}
+
+/* =========================
+   HERO
+========================= */
+.hero{
+  text-align:center;
+  padding:70px 20px 20px;
+}
+
+.hero h2{
+  font-family:Lobster;
+  font-size:52px;
+  margin:0;
+}
+
+/* =========================
+   GRID
+========================= */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:22px;
+  padding:40px;
+}
+
+/* =========================
+   CARD MODERN
+========================= */
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  transition:0.3s ease;
+}
+
+.card:hover{
+  transform:translateY(-10px);
+  box-shadow:0 18px 40px rgba(0,0,0,0.12);
+}
+
+.card img{
+  width:100%;
+  height:220px;
+  object-fit:cover;
+}
+
+.card-content{
+  padding:14px;
+}
+
+.card-content h3{
+  margin:0;
+  font-size:15px;
+}
+
+.card-content p{
+  margin:6px 0 12px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* =========================
+   BUTTON MODERN
+========================= */
+button{
+  width:100%;
+  padding:10px;
+  border:none;
+  background:var(--primary);
+  color:#fff;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:500;
+  transition:0.25s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  opacity:0.9;
+}
+
+button:active{
+  transform:scale(0.95);
+}
+
+/* =========================
+   CART BOX
+========================= */
+.cart-box{
+  position:absolute;
+  right:20px;
+  top:70px;
+  width:280px;
+  background:#fff;
+  box-shadow:var(--shadow);
+  padding:12px;
+  display:none;
+  border-radius:12px;
+}
+
+.item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:13px;
+  margin:8px 0;
+}
+
+/* =========================
+   FLY ANIMATION
+========================= */
+.flying-item{
+  position:fixed;
+  z-index:9999;
+  width:40px;
+  height:40px;
+  object-fit:cover;
+  border-radius:10px;
+  pointer-events:none;
+  transition:all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* =========================
+   FORM
+========================= */
+.form{
+  max-width:420px;
+  margin:30px auto;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.form input{
+  padding:11px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  outline:none;
+}
+
+.form input:focus{
+  border-color:#111;
+}
+
+/* =========================
+   FOOTER
+========================= */
+footer{
+  text-align:center;
+  padding:20px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo"><h1>Falco Thrift</h1></div>
+
+  <div class="nav">
+    <a href="#produk">Produk</a>
+    <a href="checkout.html">Checkout</a>
+  </div>
+
+  <div class="cart" onclick="toggleCart()">
+    🛒 <span id="cartCount">0</span>
+  </div>
+
+  <div class="cart-box" id="cartBox"></div>
+</header>
+
+<div class="hero">
+  <h2>Premium Thrift Collection</h2>
+</div>
+
+<section id="produk" class="grid">
+
+  <div class="card">
+    <img src="img/TS TYH.png">
+    <div class="card-content">
+      <h3>T-Shirt TYH</h3>
+      <p>Rp 85.000</p>
+      <button onclick="flyToCart(event,'img/TS TYH.png','T-Shirt TYH',85000)">Add to Cart</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="img/TS VINTAGE.png">
+    <div class="card-content">
+      <h3>T-Shirt Crimson</h3>
+      <p>Rp 120.000</p>
+      <button onclick="flyToCart(event,'img/TS VINTAGE.png','T-Shirt Crimson',120000)">Add to Cart</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="img/vwhite.png">
+    <div class="card-content">
+      <h3>Varsity White</h3>
+      <p>Rp 180.000</p>
+      <button onclick="flyToCart(event,'img/vwhite.png','Varsity White',180000)">Add to Cart</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="img/snsb w.jpg">
+    <div class="card-content">
+      <h3>Hoodie SNSB World</h3>
+      <p>Rp 500.000</p>
+      <button onclick="flyToCart(event,'img/snsb w.jpg','Hoodie SNSB World',500000)">Add to Cart</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="img/varsitygreen.png">
+    <div class="card-content">
+      <h3>Varsity Harsh Racing</h3>
+      <p>Rp 250.000</p>
+      <button onclick="flyToCart(event,'img/varsitygreen.png','Varsity Harsh Racing',250000)">Add to Cart</button>
+    </div>
+  </div>
+
+   <div class="card">
+    <img src="img/THREEWORLDSxJUM.jpg">
+    <div class="card-content">
+      <h3>HODIE THREEWORLDSxJUM</h3>
+      <p>Rp 350.000</p>
+      <button onclick="flyToCart(event,'img/THREEWORLDSxJUM.jpg','HODIE THREEWORLDSxJUM',350000)">Add to Cart</button>
+    </div>
+  </div>
+
+        <div class="card">
+    <img src="img/kaos_mchc_tour_1745576716_e27514f9_progressive.jpg">
+    <div class="card-content">
+      <h3>T-Shirt MCHC TOURFEST</h3>
+      <p>Rp 250.000</p>
+      <button onclick="flyToCart(event,'img/kaos_mchc_tour_1745576716_e27514f9_progressive.jpg','T-Shirt MCHC TOURFEST',250000)">Add to Cart</button>
+    </div>
+  </div>
+
+        <div class="card">
+    <img src="img/snsb 1.jpg">
+    <div class="card-content">
+      <h3>HODIE SNSB</h3>
+      <p>Rp 550.000</p>
+      <button onclick="flyToCart(event,'img/snsb ts.jpg','HODIE SNSB',550000)">Add to Cart</button>
+    </div>
+  </div>
+
+      <div class="card">
+    <img src="img/snsb ts.jpg">
+    <div class="card-content">
+      <h3>Jersey SNSBxCALLE</h3>
+      <p>Rp 350.000</p>
+      <button onclick="flyToCart(event,'img/snsb ts.jpg','Jersey SNSBxCALLE',350000)">Add to Cart</button>
+    </div>
+  </div>
+
+    <div class="card">
+    <img src="img/TNF.jpg">
+    <div class="card-content">
+      <h3>T-Shirt TNF</h3>
+      <p>Rp 120.000</p>
+      <button onclick="flyToCart(event,'img/TNF.jpg','T-Shirt TNF',120000)">Add to Cart</button>
+    </div>
+  </div>
+
+        <div class="card">
+    <img src="img/TS BEATL.png">
+    <div class="card-content">
+      <h3>T-Shirt RECKLESS</h3>
+      <p>Rp 120.000</p>
+      <button onclick="flyToCart(event,'img/TS BEATL.png','T-Shirt RECKLESS',120000)">Add to Cart</button>
+    </div>
+  </div>
+
+      <div class="card">
+    <img src="img/vracing.png">
+    <div class="card-content">
+      <h3>Varsity Fast Speed Blue</h3>
+      <p>Rp 270.000</p>
+      <button onclick="flyToCart(event,'img/vracing.png','Varsity Fast Speed Blue',270000)">Add to Cart</button>
+    </div>
+  </div>
+
+
+</section>
+
+<!-- FORM -->
+<section>
+  <h2 style="text-align:center;">Alamat Pengiriman</h2>
+
+  <form class="form" onsubmit="goCheckout();return false;">
+    <input id="nama" placeholder="Nama" required>
+    <input id="alamat" placeholder="Alamat" required>
+    <input id="kota" placeholder="Kota" required>
+    <input id="telp" placeholder="No WA" required>
+    <button type="submit">Checkout</button>
+  </form>
+</section>
+
+<footer>© 2026 Falco Thrift. All Rights Reserved.</footer>
+
+<script>
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function addCart(name, price){
+  let item = cart.find(i => i.name === name);
+  if(item) item.qty++;
+  else cart.push({name, price, qty:1});
+
+  save();
+  update();
+}
+
+function save(){
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function update(){
+  let qty = 0;
+  cart.forEach(i => qty += i.qty);
+  document.getElementById("cartCount").innerText = qty;
+}
+
+function bounceCart(){
+  const el = document.querySelector(".cart");
+  el.classList.remove("bounce");
+  void el.offsetWidth;
+  el.classList.add("bounce");
+}
+
+function flyToCart(e,img,name,price){
+  addCart(name,price);
+  bounceCart();
+
+  const cartEl = document.querySelector(".cart");
+  const imgEl = document.createElement("img");
+
+  imgEl.src = img;
+  imgEl.className = "flying-item";
+  document.body.appendChild(imgEl);
+
+  const start = e.target.getBoundingClientRect();
+  const end = cartEl.getBoundingClientRect();
+
+  imgEl.style.left = start.left + "px";
+  imgEl.style.top = start.top + "px";
+
+  setTimeout(()=>{
+    imgEl.style.left = end.left + "px";
+    imgEl.style.top = end.top + "px";
+    imgEl.style.opacity = "0";
+    imgEl.style.width = "20px";
+    imgEl.style.height = "20px";
+  },50);
+
+  setTimeout(()=>imgEl.remove(),900);
+}
+
+function toggleCart(){
+  let box = document.getElementById("cartBox");
+
+  if(box.style.display === "block"){
+    box.style.display = "none";
+    return;
+  }
+
+  let html = "";
+  let total = 0;
+
+  cart.forEach((i,index)=>{
+    total += i.price * i.qty;
+
+    html += `
+      <div class="item">
+        ${i.name} x${i.qty}
+        <div>
+          <button onclick="min(${index})">-</button>
+          <button onclick="plus(${index})">+</button>
+        </div>
+      </div>
+    `;
+  });
+
+  html += `<hr><b>Total: Rp ${total.toLocaleString()}</b>`;
+
+  box.innerHTML = html;
+  box.style.display = "block";
+}
+
+function plus(i){
+  cart[i].qty++;
+  save();
+  update();
+  toggleCart();
+}
+
+function min(i){
+  cart[i].qty--;
+  if(cart[i].qty <= 0) cart.splice(i,1);
+  save();
+  update();
+  toggleCart();
+}
+
+function goCheckout(){
+  localStorage.setItem("alamat", JSON.stringify({
+    nama:nama.value,
+    alamat:alamat.value,
+    kota:kota.value,
+    telp:telp.value
+  }));
+
+  window.location="checkout.html";
+}
+
+update();
+
+</script>
+
+</body>
+</html>
